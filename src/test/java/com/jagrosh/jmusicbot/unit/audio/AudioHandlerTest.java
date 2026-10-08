@@ -66,6 +66,35 @@ public class AudioHandlerTest extends TestBase {
     }
 
     // ==================== Add Track Tests ====================
+    @Test
+    void playbackFailureNotifiesRequestChannelWithoutLeakingException() {
+        AudioTrack track = mock(AudioTrack.class);
+        var source = mock(com.sedmelluq.discord.lavaplayer.source.AudioSourceManager.class);
+        var channel = mock(net.dv8tion.jda.api.entities.channel.concrete.TextChannel.class);
+        var action = mock(net.dv8tion.jda.api.requests.restaction.MessageCreateAction.class);
+        when(track.getSourceManager()).thenReturn(source);
+        when(source.getSourceName()).thenReturn("youtube");
+        when(track.getUserData(com.jagrosh.jmusicbot.audio.RequestMetadata.class))
+                .thenReturn(new com.jagrosh.jmusicbot.audio.RequestMetadata(
+                        (com.jagrosh.jmusicbot.audio.RequestMetadata.UserInfo) null, null, 123L));
+        when(jda.getTextChannelById(123L)).thenReturn(channel);
+        when(channel.sendMessage(anyString())).thenReturn(action);
+        when(action.setAllowedMentions(anyCollection())).thenReturn(action);
+        audioHandler.onTrackException(audioPlayer, track,
+                new com.sedmelluq.discord.lavaplayer.tools.FriendlyException(
+                        "private signed URL", com.sedmelluq.discord.lavaplayer.tools.FriendlyException.Severity.COMMON, null));
+        verify(channel).sendMessage(argThat((CharSequence message) -> message.toString().contains("YouTube")
+                && !message.toString().contains("private signed URL")));
+        verify(action).setAllowedMentions(java.util.Collections.emptyList());
+    }
+
+    @Test
+    void playbackFailureWithNullMessageDoesNotCrash() {
+        AudioTrack track = mock(AudioTrack.class);
+        assertDoesNotThrow(() -> audioHandler.onTrackException(audioPlayer, track,
+                new com.sedmelluq.discord.lavaplayer.tools.FriendlyException(
+                        null, com.sedmelluq.discord.lavaplayer.tools.FriendlyException.Severity.COMMON, null)));
+    }
 
     @Nested
     @DisplayName("Add Track Operations")

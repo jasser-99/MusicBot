@@ -305,6 +305,18 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
         
         // Log request metadata if available
         RequestMetadata rm = track.getUserData(RequestMetadata.class);
+        if (rm != null && rm.channelId != 0 && manager.getBot().getJDA() != null) {
+            var channel = manager.getBot().getJDA().getTextChannelById(rm.channelId);
+            if (channel != null) {
+                boolean youtube = track.getSourceManager() != null
+                        && "youtube".equals(track.getSourceManager().getSourceName());
+                String explanation = youtube
+                        ? "YouTube could not provide playable audio for this track. It may require sign-in, or the YouTube player integration may need an update. Try a local audio file or another supported source."
+                        : "The audio source failed during playback. Try another track or source.";
+                channel.sendMessage(explanation).setAllowedMentions(java.util.Collections.emptyList())
+                        .queue(message -> {}, failure -> LOGGER.warn("Could not send playback failure notice"));
+            }
+        }
         if (rm != null && rm.user != null) {
             errorDetails.append("  Requested by: ").append(rm.user.username).append(" (ID: ").append(rm.user.id).append(")\n");
         }
@@ -327,9 +339,9 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
         }
         
         // Special handling for YouTube OAuth errors
-        if (exception.getMessage().equals("Sign in to confirm you're not a bot")
-            || exception.getMessage().equals("Please sign in")
-            || exception.getMessage().equals("This video requires login."))
+        if ("Sign in to confirm you're not a bot".equals(exception.getMessage())
+            || "Please sign in".equals(exception.getMessage())
+            || "This video requires login.".equals(exception.getMessage()))
         {
             LOGGER.error(
                     "Track {} has failed to play: {}. "
