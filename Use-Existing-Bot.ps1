@@ -34,11 +34,9 @@ try {
     $configPath = Join-Path $PSScriptRoot 'config.txt'
     [IO.File]::WriteAllText($configPath, $configText, (New-Object Text.UTF8Encoding($false)))
     $setupStage = 'protecting configuration'
-    $configAcl = Get-Acl -LiteralPath $configPath
-    $configAcl.SetAccessRuleProtection($true, $false)
     $userIdentity = [Security.Principal.WindowsIdentity]::GetCurrent().Name
-    $configAcl.SetAccessRule((New-Object Security.AccessControl.FileSystemAccessRule($userIdentity, 'FullControl', 'Allow')))
-    Set-Acl -LiteralPath $configPath -AclObject $configAcl
+    & icacls.exe $configPath /inheritance:r /grant:r ($userIdentity + ':(F)') | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'Configuration permission update failed' }
     Write-Host ('Configured bot: ' + $botIdentity.username + '. Token value omitted.')
 } catch {
     $httpStatus = $null
