@@ -14,6 +14,10 @@ Changes in jasser-99/MusicBot relative to arif-banai/MusicBot. The application v
 
 ### Changed
 
+- Prefer the updated iOS YouTube client before the TV combined video/audio fallback during OAuth playback. The library continues to choose its best supported format from each client's response; tested track selected audio-only stereo AAC at approximately 130 kbps.
+- Explicitly use maximum Opus encoder quality and high-quality resampling. This does not invent source quality or force a fixed outgoing bitrate.
+- Stop buttons and commands now honor `voice.stayInChannel`, preserving the voice connection when enabled while the empty-room timeout remains active.
+
 - Default `playback.maxYouTubePlaylistPages` to **20**.
 - Default `presence.songInStatus` to **true**, showing the playing song in Listening activity.
 - Default `voice.stayInChannel` to **true** and `voice.aloneTimeUntilStopSeconds` to **600**. The bot stays after the queue ends, then stops, clears the queue and disconnects after ten minutes without human users. The five-second polling interval can add up to five seconds to the timeout.
@@ -21,6 +25,8 @@ Changes in jasser-99/MusicBot relative to arif-banai/MusicBot. The application v
 - Pin YouTube source to upstream snapshot `2be8e542d3f6f178e048dca565892684c2e40177-SNAPSHOT`, including the TV-client reload-error fix, missing format-length recovery and cipher response cleanup.
 
 ### Fixed
+
+- Garbled response emojis on Windows: setup scripts explicitly read UTF-8 configuration, and existing local emoji settings were repaired.
 
 - Missing or malformed track titles, including invalid URL metadata and unsafe query-string fallbacks.
 - Unsupported voice-channel/thread conversion in music command entry points; these commands request a regular text channel.
@@ -31,8 +37,8 @@ Changes in jasser-99/MusicBot relative to arif-banai/MusicBot. The application v
 
 ### Validation and limits
 
-- Maven `verify`: **677 unit tests + 43 integration tests = 720**, with no failures, errors or skipped tests.
+- Maven `verify`: **679 unit tests + 43 integration tests = 722**, with no failures, errors or skipped tests.
 - Windows native DAVE and UDP audio libraries loaded; local 48 kHz stereo WAV decoding produced Opus frames.
-- The patched OAuth-enabled YouTube client decoded the previously failing “Love Lockdown” track. A separate measurement selected stereo AAC in MP4 (`itag 18`); this is track-specific, not a promise of fixed bitrate or lossless quality.
+- The patched OAuth-enabled YouTube client decoded the previously failing “Love Lockdown” track. The original TV fallback selected combined video/audio MP4 (`itag 18`); the updated iOS-first path selected audio-only stereo AAC (`itag 140`, reported 130,532 bps). This is track-specific, not a promise of fixed bitrate or lossless quality.
 - YouTube OAuth remains disabled in the distributed defaults. When enabled, the existing integration uses Google's device authorization flow and the third-party cipher service `cipher.kikkia.dev`; saved tokens must stay private.
 - Bot profile icon and banner were not changed. Portable runtime, compiled JAR, local audio, configuration, credentials and logs are excluded from Git.

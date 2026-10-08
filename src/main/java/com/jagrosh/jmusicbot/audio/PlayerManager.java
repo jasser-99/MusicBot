@@ -43,6 +43,10 @@ public class PlayerManager extends DefaultAudioPlayerManager
     public void init()
     {
         BotConfig config = bot.getConfig();
+        getConfiguration().setOpusEncodingQuality(
+                com.sedmelluq.discord.lavaplayer.player.AudioConfiguration.OPUS_QUALITY_MAX);
+        getConfiguration().setResamplingQuality(
+                com.sedmelluq.discord.lavaplayer.player.AudioConfiguration.ResamplingQuality.HIGH);
         
         // Configure frame buffer for GC protection (default 2000ms = 2 seconds of audio buffered)
         setFrameBufferDuration(config.getFrameBufferMs());

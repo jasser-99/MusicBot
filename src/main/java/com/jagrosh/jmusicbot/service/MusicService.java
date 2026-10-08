@@ -524,7 +524,8 @@ public class MusicService
 
         AudioHandler handler = getHandler(guild);
         handler.stopAndClearQueuePreserveHistory();
-        guild.getAudioManager().closeAudioConnection();
+        if (!bot.getConfig().getStay())
+            guild.getAudioManager().closeAudioConnection();
         output.editNoMusic(handler);
     }
 
@@ -540,9 +541,10 @@ public class MusicService
 
         AudioHandler handler = getHandler(guild);
         handler.stopAndClearQueuePreserveHistory();
-        guild.getAudioManager().closeAudioConnection();
+        if (!bot.getConfig().getStay())
+            guild.getAudioManager().closeAudioConnection();
 
-        LOG.debug("Audio connection closed: guild={}", guild.getId());
+        LOG.debug("Playback stopped: guild={}, staying={}", guild.getId(), bot.getConfig().getStay());
     }
 
     public void pause(Guild guild, Member member, OutputAdapter output)

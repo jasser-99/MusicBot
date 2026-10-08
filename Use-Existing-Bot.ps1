@@ -26,8 +26,8 @@ try {
     if (-not $ownerId) { $ownerId = Read-Host 'Your Discord user ID' }
     if ($ownerId -notmatch '^\d{17,20}$') { $safeFailure = 'The owner ID must be your numeric Discord user ID (17 to 20 digits).'; throw 'Invalid owner' }
     $setupStage = 'saving configuration'
-    if (Test-Path -LiteralPath 'config.txt') { $configText = Get-Content -LiteralPath 'config.txt' -Raw }
-    else { $configText = Get-Content -LiteralPath 'src/main/resources/reference.conf' -Raw }
+    if (Test-Path -LiteralPath 'config.txt') { $configText = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'config.txt'), [Text.Encoding]::UTF8) }
+    else { $configText = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'src/main/resources/reference.conf'), [Text.Encoding]::UTF8) }
     $tokenJson = ConvertTo-Json -InputObject $botToken -Compress
     $configText = [regex]::Replace($configText, '(?m)^\s*token\s*=.*$', ('  token = ' + $tokenJson))
     $configText = [regex]::Replace($configText, '(?m)^\s*owner\s*=.*$', ('  owner = ' + $ownerId))

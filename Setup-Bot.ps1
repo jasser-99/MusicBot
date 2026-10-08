@@ -14,7 +14,7 @@ if ($ownerId -notmatch '^\d{17,20}$') { throw 'Enter a valid Discord user ID.' }
 $musicFolder = Read-Host 'Music folder (press Enter for the Music subfolder)'
 if ([string]::IsNullOrWhiteSpace($musicFolder)) { $musicFolder = 'Music' }
 New-Item -ItemType Directory -Force -Path $musicFolder | Out-Null
-$configText = Get-Content -LiteralPath 'src/main/resources/reference.conf' -Raw
+$configText = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'src/main/resources/reference.conf'), [Text.Encoding]::UTF8)
 $tokenJson = ConvertTo-Json -InputObject $botToken -Compress
 $folderJson = ConvertTo-Json -InputObject $musicFolder -Compress
 $configText = $configText.Replace('"BOT_TOKEN_HERE"', $tokenJson).Replace('owner = 0 # OWNER ID', "owner = $ownerId # OWNER ID").Replace('localMusicFolder = "Music"', "localMusicFolder = $folderJson")

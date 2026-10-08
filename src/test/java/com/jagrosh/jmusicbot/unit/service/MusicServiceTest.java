@@ -477,6 +477,23 @@ public class MusicServiceTest
     class StopOperationTests
     {
         @Test
+        void stopButtonKeepsVoiceConnectionWhenStayEnabled() {
+            fixture.withDJPermission();
+            when(fixture.getBot().getConfig().getStay()).thenReturn(true);
+            musicService.stop(fixture.getGuild(), fixture.getMember(), output);
+            verify(fixture.getAudioHandler()).stopAndClearQueuePreserveHistory();
+            verify(fixture.getAudioManager(), never()).closeAudioConnection();
+            output.assertNoMusicEdited();
+        }
+
+        @Test
+        void stopCommandKeepsVoiceConnectionWhenStayEnabled() {
+            when(fixture.getBot().getConfig().getStay()).thenReturn(true);
+            musicService.stopAndClear(fixture.getGuild());
+            verify(fixture.getAudioHandler()).stopAndClearQueuePreserveHistory();
+            verify(fixture.getAudioManager(), never()).closeAudioConnection();
+        }
+        @Test
         @DisplayName("stop() stops playback and closes connection for DJ")
         void stop_stopsAndCloses_forDJ()
         {

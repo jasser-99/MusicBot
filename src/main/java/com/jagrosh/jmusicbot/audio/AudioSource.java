@@ -38,6 +38,7 @@ import dev.lavalink.youtube.YoutubeSourceOptions;
 import dev.lavalink.youtube.clients.AndroidVrWithThumbnail;
 import dev.lavalink.youtube.clients.ClientOptions;
 import dev.lavalink.youtube.clients.MWebWithThumbnail;
+import dev.lavalink.youtube.clients.IosWithThumbnail;
 import dev.lavalink.youtube.clients.Tv;
 import dev.lavalink.youtube.clients.TvHtml5SimplyWithThumbnail;
 import dev.lavalink.youtube.clients.WebWithThumbnail;
@@ -292,6 +293,7 @@ public enum AudioSource
                 new AndroidVrWithThumbnail(metadataOnly), // metadata loading (non-embedded, non-OAuth)
                 new MWebWithThumbnail(metadataOnly),      // metadata loading (non-embedded, non-OAuth)
                 new WebWithThumbnail(metadataOnly),       // metadata loading (non-embedded, non-OAuth)
+                new IosWithThumbnail(), // Prefer audio-only formats before the TV muxed fallback.
                 new Tv(),
                 new TvHtml5SimplyWithThumbnail()
             };
@@ -301,6 +303,7 @@ public enum AudioSource
             new AndroidVrWithThumbnail(),
             new MWebWithThumbnail(),
             new WebWithThumbnail(),
+            new IosWithThumbnail(),
             new TvHtml5SimplyWithThumbnail() 
         };
     }

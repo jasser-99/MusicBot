@@ -17,10 +17,13 @@
 | YouTube playlists | Default maximum playlist pages increased to **20**. |
 | Voice retention | Stays connected after the queue finishes. When the last human leaves, waits **10 minutes** before stopping playback, clearing the queue and disconnecting. A returning human cancels the timer; deafened humans count as present. |
 | YouTube playback fix | Pins a maintainer snapshot containing the TV-client fix for “The page needs to be reloaded” and related cipher/format improvements. |
+| YouTube audio quality | Prioritizes the updated iOS client before the TV combined video/audio fallback when OAuth is enabled. Keeps the library's best-format selection, maximum Opus encoder quality and high-quality resampling. Available quality depends on the track and source response. |
+| Stop behavior | Stop buttons and commands clear playback while honoring `voice.stayInChannel`; the empty-room timeout still applies. |
 | Playback errors | Reports source playback failures in the requesting text channel without exposing raw exception details or signed URLs. |
 | Unsupported command channels | Music commands explain when a regular text channel is required instead of failing to convert a voice channel or thread. |
 | Windows setup | Includes setup, build and start launchers, plus a private token prompt for reusing an existing bot application. Token verification checks the selected application and reports safe, specific errors. |
 | OAuth tests | Token-writing tests use temporary files, preventing builds from overwriting a real saved YouTube token. |
+| Windows text encoding | Setup scripts read configuration as UTF-8, preserving response emojis instead of producing garbled text. |
 
 See the [changelog](CHANGELOG.md) for the changes and [local setup guide](LOCAL-SETUP.md) for configuration and Windows instructions.
 
@@ -33,7 +36,7 @@ for [upstream issue #226](https://github.com/lavalink-devs/youtube-source/issues
 YouTube OAuth remains **off by default**. Enabling it starts Google's device authorization flow and also enables this fork's existing remote cipher service at `cipher.kikkia.dev`.
 Review the [maintainer's OAuth guidance](https://github.com/lavalink-devs/youtube-source#using-oauth-tokens) before connecting an account; authorization does not guarantee every track will work.
 
-Validation on Windows: **720 automated tests passed**, native DAVE/UDP libraries loaded, local stereo audio decoded, and an OAuth-enabled YouTube track produced Opus audio frames after the client fix. Source availability can change; this does not establish playback reliability for every source or track.
+Validation on Windows: **722 automated tests passed**, native DAVE/UDP libraries loaded, local stereo audio decoded, and an OAuth-enabled YouTube track produced Opus audio frames after the client fix. The updated client selected audio-only stereo AAC at approximately 130 kbps for the tested track, replacing its combined video/audio fallback. Source availability can change; this does not establish playback reliability for every source or track.
 
 The badges below refer to the upstream project's releases and services. This fork does not yet publish its own release artifacts.
 
