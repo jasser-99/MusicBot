@@ -13,6 +13,7 @@ public final class LocalMusicLibrary {
     public static List<Path> search(Path folder, String query, int limit) throws IOException {
         if (limit < 1) return List.of();
         Path root = folder.toRealPath();
+        if (!Files.isDirectory(root)) throw new IOException("The music library must be a directory.");
         String input = query == null ? "" : query.trim();
         if (!input.isEmpty()) {
             Path requested = root.resolve(input).normalize();

@@ -21,6 +21,8 @@ class TrackTitleFallbackTest {
     @Test void handlesEmptyMetadataAndLongNames() {
         assertEquals("Untitled audio", FormatUtil.getTrackTitle(track("", null)));
         assertEquals("radio.example", FormatUtil.getTrackTitle(track("Unknown title", "https://radio.example/")));
+        assertEquals("Untitled audio stream", FormatUtil.getTrackTitle(track(null, "https://bad_host/")));
+        assertEquals("song.mp3", FormatUtil.getTrackTitle(track("\u202e", "C:/Music/song.mp3")));
         assertEquals(100, FormatUtil.getTrackTitle(track(null, "C:/Music/" + "a".repeat(150) + ".mp3")).length());
     }
 }

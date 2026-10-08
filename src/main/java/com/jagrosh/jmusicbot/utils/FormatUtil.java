@@ -16,7 +16,6 @@
 package com.jagrosh.jmusicbot.utils;
 
 import com.jagrosh.jmusicbot.audio.RequestMetadata.UserInfo;
-import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -124,6 +123,7 @@ public class FormatUtil {
 
     public static String getTrackTitle(AudioTrack track) {
         String title = track.getInfo().title;
+        if (title != null) title = filter(title);
         if (title == null || title.isBlank() || title.equalsIgnoreCase("Unknown title")) {
             String identifier = track.getIdentifier();
             if (identifier == null || identifier.isBlank())
@@ -136,6 +136,7 @@ public class FormatUtil {
                     String path = uri.getPath();
                     identifier = path == null || path.isBlank() || path.equals("/")
                             ? uri.getHost() : path;
+                    if (identifier == null || identifier.isBlank()) identifier = "Untitled audio stream";
                 } catch (IllegalArgumentException ignored) {
                     identifier = "Untitled audio stream";
                 }

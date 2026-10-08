@@ -34,14 +34,14 @@ Verified locally:
 
 - Maven `verify`: 673 unit tests and 43 integration tests, zero failures/errors/skips.
 - New regression tests cover online title preservation, missing/empty metadata, HTTP query stripping, local recursive search, ambiguous matching, path traversal rejection, command registration, selected-file queuing, and voice-chat error handling.
-- Windows native DAVE loading and local 48 kHz stereo WAV-to-Opus decoding passed.
+- Windows native DAVE and UDP audio library loading and local 48 kHz stereo WAV-to-Opus decoding passed.
 - PowerShell setup syntax and packaged default-config generation passed.
 
 Unverified until a bot token and target server are configured: Discord login, slash registration, voice connection, permissions, end-to-end sound quality, and live playback from each online source. Changing website APIs can break individual source extractors. Audio quality depends on the original source, volume settings, and Discord voice bitrate; the bot cannot restore quality lost in the source.
 
 ## Publishing local changes
 
-The source changes are on `feature/local-library-and-track-titles`. `origin` points to your fork; `upstream` points to arif-banai/MusicBot. After Git authentication, push the feature branch with:
+The source changes are published on `feature/local-library-and-track-titles`. `origin` points to your fork; `upstream` points to arif-banai/MusicBot. For future local changes, push the feature branch with:
 
 ```powershell
 git push -u origin feature/local-library-and-track-titles
