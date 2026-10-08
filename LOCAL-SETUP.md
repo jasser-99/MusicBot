@@ -14,6 +14,8 @@ This working copy starts at upstream commit `6116b7aec6bd9614a33a736483e4f54ae2f
 
 Java 25 and the compiled JAR are included locally. The Maven tool is also included for **Build Bot.bat**, which runs the full test suite before replacing `JMusicBot.jar`. Runtime/tool binaries are excluded from Git. For another PC, obtain Java 25 from Eclipse Adoptium and Maven from Apache or use the upstream Docker setup, then build this fork. The upstream prebuilt Docker image does not contain these changes.
 
+To reuse a different bot application, run `Use-Existing-Bot.ps1 -ExpectedApplicationId <application ID>` in PowerShell. It requests the bot token privately, verifies the application identity, retrieves its owner ID when available, and changes only the local token and owner settings. It does not change the application's name, icon, banner, or other profile settings. Resetting a token in the Developer Portal must be completed by you; existing deployments using that token will need the replacement token too.
+
 ## Added behavior
 
 - `/music play local:<song name or relative path>` searches the configured folder and subfolders. Autocomplete shows up to 25 audio files. An exact relative path selects one track; ambiguous name searches show choices instead of playing an arbitrary file.
