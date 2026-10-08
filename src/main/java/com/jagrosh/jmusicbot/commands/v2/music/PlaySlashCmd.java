@@ -76,7 +76,7 @@ public class PlaySlashCmd extends MusicSlashCommand
             @Override
             public void trackLoaded(AudioTrack track)
             {
-                String title = track.getInfo().title;
+                String title = com.jagrosh.jmusicbot.utils.FormatUtil.getTrackTitle(track);
                 event.replyChoices(new Command.Choice(truncateTitle(title), track.getInfo().uri)).queue();
             }
 
@@ -120,7 +120,7 @@ public class PlaySlashCmd extends MusicSlashCommand
         for(int i = 0; i < limit; i++)
         {
             AudioTrack track = playlist.getTracks().get(i);
-            String title = track.getInfo().title;
+            String title = com.jagrosh.jmusicbot.utils.FormatUtil.getTrackTitle(track);
             choices.add(new Command.Choice(truncateTitle(title), track.getInfo().uri));
         }
         return choices;

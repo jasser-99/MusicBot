@@ -71,6 +71,7 @@ public class BotConfig {
     private OnlineStatus status;
     private Activity game;
     private Config aliases, transforms;
+    private String localMusicFolder;
     private Set<AudioSource> enabledAudioSources;
 
     private boolean valid = false;
@@ -241,6 +242,7 @@ public class BotConfig {
      * Loads all configuration values from the merged config.
      */
     private void loadConfigValues(Config config, Config migratedUserConfig) {
+        localMusicFolder = LOCAL_MUSIC_FOLDER.getString(config);
         // set values using ConfigOption enum for type safety and standardization
         token = TOKEN.getString(config);
         prefix = PREFIX.getString(config);
@@ -466,6 +468,10 @@ public class BotConfig {
 
     public String getPlaylistsFolder() {
         return playlistsFolder;
+    }
+
+    public String getLocalMusicFolder() {
+        return localMusicFolder;
     }
 
     public boolean getDBots() {

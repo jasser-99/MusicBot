@@ -44,6 +44,10 @@ public abstract class MusicCommand extends Command
     @Override
     protected void execute(CommandEvent event)
     {
+        if (event.getChannelType() != null && event.getChannelType() != net.dv8tion.jda.api.entities.channel.ChannelType.TEXT) {
+            event.reply("Please use a regular server text channel for music commands. Voice-channel chat is not supported yet.");
+            return;
+        }
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
         String errorEmoji = event.getClient().getError();
 

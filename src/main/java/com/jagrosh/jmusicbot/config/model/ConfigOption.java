@@ -46,6 +46,7 @@ public enum ConfigOption {
     LOG_LEVEL("logging.level", ConfigType.STRING, false, "Logging verbosity (off, error, warn, info, debug, trace, all)"),
     EVAL_ENGINE("dangerous.evalEngine", ConfigType.STRING, false, "Eval engine name"),
     PLAYLISTS_FOLDER("paths.playlistsFolder", ConfigType.STRING, false, "Alternative folder for playlists"),
+    LOCAL_MUSIC_FOLDER("paths.localMusicFolder", ConfigType.STRING, false, "Directory for local music search"),
     
     // Boolean options
     STAY_IN_CHANNEL("voice.stayInChannel", ConfigType.BOOLEAN, false, "Whether to stay in voice channel after queue ends"),

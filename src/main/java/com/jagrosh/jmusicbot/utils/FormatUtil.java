@@ -124,10 +124,25 @@ public class FormatUtil {
 
     public static String getTrackTitle(AudioTrack track) {
         String title = track.getInfo().title;
-        if (track instanceof LocalAudioTrack && (title == null || title.equals("Unknown title"))) {
+        if (title == null || title.isBlank() || title.equalsIgnoreCase("Unknown title")) {
             String identifier = track.getIdentifier();
+            if (identifier == null || identifier.isBlank())
+                identifier = track.getInfo().uri;
+            if (identifier == null || identifier.isBlank())
+                identifier = "Untitled audio";
+            if (identifier.startsWith("http://") || identifier.startsWith("https://")) {
+                try {
+                    java.net.URI uri = java.net.URI.create(identifier);
+                    String path = uri.getPath();
+                    identifier = path == null || path.isBlank() || path.equals("/")
+                            ? uri.getHost() : path;
+                } catch (IllegalArgumentException ignored) {
+                    identifier = "Untitled audio stream";
+                }
+            }
             int lastSeparator = Math.max(identifier.lastIndexOf('/'), identifier.lastIndexOf('\\'));
-            return (lastSeparator != -1) ? identifier.substring(lastSeparator + 1) : identifier;
+            title = (lastSeparator != -1) ? identifier.substring(lastSeparator + 1) : identifier;
+            if (title == null || title.isBlank()) title = "Untitled audio stream";
         }
 
         // Truncate if the title is too long for Discord displays
@@ -135,7 +150,7 @@ public class FormatUtil {
             title = title.substring(0, 97) + "...";
         }
 
-        return title;
+        return filter(title);
     }
 
     /**

@@ -113,6 +113,7 @@ public class CommandFactory {
                     new NowPlayingSlashCmd(bot),
                     new NpSlashCmd(bot),
                     new PlaySlashCmd(bot),
+                    new com.jagrosh.jmusicbot.commands.v2.music.MusicLibrarySlashCmd(bot),
                     new PlaylistsSlashCmd(bot),
                     new QueueSlashCmd(bot),
                     new HistorySlashCmd(bot),

@@ -24,6 +24,11 @@ public abstract class MusicSlashCommand extends SlashCommand
     @Override
     protected void execute(SlashCommandEvent event)
     {
+        if (event.getChannelType() != null && event.getChannelType() != net.dv8tion.jda.api.entities.channel.ChannelType.TEXT) {
+            event.reply("Please use a regular server text channel for music commands. Voice-channel chat is not supported yet.")
+                    .setEphemeral(true).queue();
+            return;
+        }
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
         String errorEmoji = event.getClient().getError();
 

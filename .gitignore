@@ -25,3 +25,12 @@ Thumbs.db
 
 # Other
 *.lock
+/.runtime/
+/.tools/
+/Music/
+/JMusicBot.jar
+/config.txt.bak
+/config.txt.*
+/bot.pid
+/*.bundle
+/*.patch
