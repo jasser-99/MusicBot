@@ -32,5 +32,6 @@ Thumbs.db
 /config.txt.bak
 /config.txt.*
 /bot.pid
+/.slashcommands.hash
 /*.bundle
 /*.patch

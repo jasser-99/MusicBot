@@ -2,8 +2,40 @@
 
 # JMusicBot
 > [!NOTE]
-> This is a fork of [JMusicBot](https://github.com/jagrosh/MusicBot) from jagrosh
-> I started this because it was not maintained and was not working anymore.
+> This is [jasser-99's fork](https://github.com/jasser-99/MusicBot) of
+> [arif-banai/MusicBot](https://github.com/arif-banai/MusicBot), which builds on
+> [jagrosh's original JMusicBot](https://github.com/jagrosh/MusicBot).
+
+## What's different in this fork?
+
+| Area | Compared with arif-banai/MusicBot |
+| --- | --- |
+| Track titles | Shared title handling for now-playing messages and online search suggestions. Uses source metadata for YouTube, SoundCloud, Bandcamp, Vimeo, Twitch, local files and HTTP URLs, with safe filename/host fallbacks when metadata is missing. |
+| Listening status | Song titles appear in the bot's Listening activity by default. This status is global to the bot, so the most recent playback update wins across servers. |
+| Local music search | `/music play local:<query>` searches the configured `Music` folder and subfolders, with autocomplete. `/music local` browses the library. Ambiguous matches are listed for selection; exact paths are no longer required for library tracks. |
+| Local file boundaries | Search stays inside the configured library, rejects traversal and symlink escapes, and limits scan depth and entry count. |
+| YouTube playlists | Default maximum playlist pages increased to **20**. |
+| Voice retention | Stays connected after the queue finishes. When the last human leaves, waits **10 minutes** before stopping playback, clearing the queue and disconnecting. A returning human cancels the timer; deafened humans count as present. |
+| YouTube playback fix | Pins a maintainer snapshot containing the TV-client fix for “The page needs to be reloaded” and related cipher/format improvements. |
+| Playback errors | Reports source playback failures in the requesting text channel without exposing raw exception details or signed URLs. |
+| Unsupported command channels | Music commands explain when a regular text channel is required instead of failing to convert a voice channel or thread. |
+| Windows setup | Includes setup, build and start launchers, plus a private token prompt for reusing an existing bot application. Token verification checks the selected application and reports safe, specific errors. |
+| OAuth tests | Token-writing tests use temporary files, preventing builds from overwriting a real saved YouTube token. |
+
+See the [changelog](CHANGELOG.md) for the changes and [local setup guide](LOCAL-SETUP.md) for configuration and Windows instructions.
+
+### YouTube playback and validation
+
+The YouTube source dependency is pinned to upstream commit
+[`2be8e542`](https://github.com/lavalink-devs/youtube-source/commit/2be8e542d3f6f178e048dca565892684c2e40177).
+It includes the [TV-client fix](https://github.com/lavalink-devs/youtube-source/commit/b33460b38ad13b5cd07da75e46444397cf0ea2df)
+for [upstream issue #226](https://github.com/lavalink-devs/youtube-source/issues/226).
+YouTube OAuth remains **off by default**. Enabling it starts Google's device authorization flow and also enables this fork's existing remote cipher service at `cipher.kikkia.dev`.
+Review the [maintainer's OAuth guidance](https://github.com/lavalink-devs/youtube-source#using-oauth-tokens) before connecting an account; authorization does not guarantee every track will work.
+
+Validation on Windows: **720 automated tests passed**, native DAVE/UDP libraries loaded, local stereo audio decoded, and an OAuth-enabled YouTube track produced Opus audio frames after the client fix. Source availability can change; this does not establish playback reliability for every source or track.
+
+The badges below refer to the upstream project's releases and services. This fork does not yet publish its own release artifacts.
 
 [![Downloads](https://img.shields.io/github/downloads/arif-banai/MusicBot/total.svg)](https://github.com/arif-banai/MusicBot/releases/latest)
 [![Stars](https://img.shields.io/github/stars/arif-banai/MusicBot.svg)](https://github.com/arif-banai/MusicBot/stargazers)
