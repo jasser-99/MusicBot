@@ -48,7 +48,7 @@ public class AloneInVoiceHandler
             bot.getThreadpool().scheduleWithFixedDelay(() -> check(), 0, 5, TimeUnit.SECONDS);
     }
     
-    private void check()
+    private synchronized void check()
     {
         Set<Long> toRemove = new HashSet<>();
         for(Map.Entry<Long, Instant> entrySet: aloneSince.entrySet())
@@ -57,13 +57,14 @@ public class AloneInVoiceHandler
 
             Guild guild = bot.getJDA().getGuildById(entrySet.getKey());
 
-            if(guild == null)
+            if(guild == null || !isAlone(guild))
             {
                 toRemove.add(entrySet.getKey());
                 continue;
             }
 
-            ((AudioHandler) guild.getAudioManager().getSendingHandler()).stopAndClear();
+            if (guild.getAudioManager().getSendingHandler() instanceof AudioHandler handler)
+                handler.stopAndClear();
             guild.getAudioManager().closeAudioConnection();
 
             toRemove.add(entrySet.getKey());
@@ -71,7 +72,7 @@ public class AloneInVoiceHandler
         toRemove.forEach(id -> aloneSince.remove(id));
     }
 
-    public void onVoiceUpdate(GuildVoiceUpdateEvent event)
+    public synchronized void onVoiceUpdate(GuildVoiceUpdateEvent event)
     {
         if(aloneTimeUntilStop <= 0) return;
 
@@ -91,8 +92,6 @@ public class AloneInVoiceHandler
     {
         if(guild.getAudioManager().getConnectedChannel() == null) return false;
         return guild.getAudioManager().getConnectedChannel().getMembers().stream()
-                .noneMatch(x ->
-                        !x.getVoiceState().isDeafened()
-                        && !x.getUser().isBot());
+                .noneMatch(x -> !x.getUser().isBot());
     }
 }

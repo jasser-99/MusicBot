@@ -33,6 +33,51 @@ public class AloneInVoiceHandlerTest extends TestBase {
     }
 
     @Test
+    public void deafenedHumanStillKeepsBotConnected() throws Exception {
+        when(config.getAloneTimeUntilStop()).thenReturn(600L);
+        aloneInVoiceHandler.init();
+        when(audioManager.getConnectedChannel()).thenReturn(audioChannel);
+        when(audioChannel.getMembers()).thenReturn(Collections.singletonList(member));
+        when(member.getUser()).thenReturn(user);
+        when(user.isBot()).thenReturn(false);
+        when(member.getVoiceState()).thenReturn(voiceState);
+        when(voiceState.isDeafened()).thenReturn(true);
+        var method = AloneInVoiceHandler.class.getDeclaredMethod("isAlone", net.dv8tion.jda.api.entities.Guild.class);
+        method.setAccessible(true);
+        org.junit.jupiter.api.Assertions.assertEquals(false, method.invoke(aloneInVoiceHandler, guild));
+    }
+
+    @Test
+    public void emptyRoomWaitsTenMinutesAndReturningHumanCancelsTimeout() throws Exception {
+        when(config.getAloneTimeUntilStop()).thenReturn(600L);
+        aloneInVoiceHandler.init();
+        when(playerManager.hasHandler(guild)).thenReturn(true);
+        when(audioManager.getConnectedChannel()).thenReturn(audioChannel);
+        when(audioChannel.getMembers()).thenReturn(Collections.singletonList(member));
+        when(member.getUser()).thenReturn(user);
+        when(user.isBot()).thenReturn(true);
+        when(jda.getGuildById(guild.getIdLong())).thenReturn(guild);
+        aloneInVoiceHandler.onVoiceUpdate(voiceUpdateEvent);
+        var field = AloneInVoiceHandler.class.getDeclaredField("aloneSince");
+        field.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        var timers = (java.util.Map<Long, java.time.Instant>) field.get(aloneInVoiceHandler);
+        var check = AloneInVoiceHandler.class.getDeclaredMethod("check");
+        check.setAccessible(true);
+        timers.put(guild.getIdLong(), java.time.Instant.now().minusSeconds(599));
+        check.invoke(aloneInVoiceHandler);
+        verify(audioManager, never()).closeAudioConnection();
+        when(user.isBot()).thenReturn(false);
+        aloneInVoiceHandler.onVoiceUpdate(voiceUpdateEvent);
+        org.junit.jupiter.api.Assertions.assertTrue(timers.isEmpty());
+        when(user.isBot()).thenReturn(true);
+        aloneInVoiceHandler.onVoiceUpdate(voiceUpdateEvent);
+        timers.put(guild.getIdLong(), java.time.Instant.now().minusSeconds(601));
+        check.invoke(aloneInVoiceHandler);
+        verify(audioManager).closeAudioConnection();
+    }
+
+    @Test
     public void testOnVoiceUpdateWhenDisabled() {
         when(config.getAloneTimeUntilStop()).thenReturn(0L);
         aloneInVoiceHandler.init();
