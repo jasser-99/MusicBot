@@ -40,12 +40,23 @@ class YoutubeOauth2TokenHandlerTest {
 
     private YoutubeOauth2TokenHandler handler;
     private Logger youtubeOauthLogger;
+    @org.junit.jupiter.api.io.TempDir
+    java.nio.file.Path tokenDirectory;
+    private org.mockito.MockedStatic<com.jagrosh.jmusicbot.utils.OtherUtil> paths;
 
     @BeforeEach
     void setUp() {
+        paths = org.mockito.Mockito.mockStatic(com.jagrosh.jmusicbot.utils.OtherUtil.class);
+        paths.when(() -> com.jagrosh.jmusicbot.utils.OtherUtil.getPath("youtubetoken.txt"))
+                .thenReturn(tokenDirectory.resolve("youtubetoken.txt"));
         handler = new YoutubeOauth2TokenHandler();
         // Get the logger that the YouTube library uses
         youtubeOauthLogger = (Logger) LoggerFactory.getLogger("dev.lavalink.youtube.http.YoutubeOauth2Handler");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    void restorePaths() {
+        paths.close();
     }
 
     @Nested
